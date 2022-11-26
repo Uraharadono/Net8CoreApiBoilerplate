@@ -31,7 +31,7 @@ namespace Net7CoreApiBoilerplate.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // I am literally registering this DB Context here, just so I can use EF Core Identity
-            services.AddDbContext<Net6BoilerplateContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BloggingDb")));
+            services.AddDbContext<Net7BoilerplateContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BloggingDb")));
 
             // The validation system in .NET Core 3.0 and later treats non-nullable parameters or bound properties as if they had a [Required] attribute.
             // Value types such as decimal and int are non-nullable. To turn it off:

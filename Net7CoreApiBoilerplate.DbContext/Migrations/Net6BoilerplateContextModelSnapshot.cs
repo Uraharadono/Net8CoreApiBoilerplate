@@ -8,8 +8,8 @@ using Net7CoreApiBoilerplate.DbContext.Infrastructure;
 
 namespace Net7CoreApiBoilerplate.DbContext.Migrations
 {
-    [DbContext(typeof(Net6BoilerplateContext))]
-    partial class Net6BoilerplateContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Net7BoilerplateContext))]
+    partial class Net7BoilerplateContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

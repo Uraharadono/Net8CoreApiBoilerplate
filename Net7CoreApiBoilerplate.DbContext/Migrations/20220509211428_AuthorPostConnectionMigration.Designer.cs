@@ -9,7 +9,7 @@ using Net7CoreApiBoilerplate.DbContext.Infrastructure;
 
 namespace Net7CoreApiBoilerplate.DbContext.Migrations
 {
-    [DbContext(typeof(Net6BoilerplateContext))]
+    [DbContext(typeof(Net7BoilerplateContext))]
     [Migration("20220509211428_AuthorPostConnectionMigration")]
     partial class AuthorPostConnectionMigration
     {

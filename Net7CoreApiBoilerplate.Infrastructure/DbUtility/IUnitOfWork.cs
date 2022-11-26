@@ -14,6 +14,8 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
         bool HasChanges();
         bool IsInTransaction();
         void ExecuteInTransaction(Action action);
+        // void RollbackTransaction();
+        void ClearChangeTracker();
 
         Task ClearDb(params string[] excluded);
         Task TruncateTables(params string[] tables);
@@ -28,5 +30,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
 
         // Procedures logic. ONLY IDEA taken from: https://stackoverflow.com/a/48165699/4267429 (more in implementation)
         Task<List<T>> ExecuteStoredProc<T>(string storedProcName, Dictionary<string, object> procParams) where T : class;
+
+        Task ExecuteInTransactionAsync(Func<Task> action);
     }
 }

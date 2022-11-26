@@ -19,7 +19,7 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
         {
             // Unit of work
 
-            var deronContext = Net6BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
+            var deronContext = Net7BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
             // Both Singleton and Scoped work - at the moment I feel much better with scoped
             // services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(deronContext));
             services.AddScoped<IUnitOfWork>(x => new UnitOfWork(deronContext));

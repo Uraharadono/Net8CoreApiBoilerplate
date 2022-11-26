@@ -11,7 +11,7 @@ namespace Net7CoreApiBoilerplate.Api.Infrastructure.Helpers
         public static void ConfigureService(IServiceCollection services)
         {
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddEntityFrameworkStores<Net6BoilerplateContext>()
+                .AddEntityFrameworkStores<Net7BoilerplateContext>()
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>

@@ -2,30 +2,28 @@
 using Microsoft.EntityFrameworkCore;
 using Net7CoreApiBoilerplate.DbContext.Entities;
 using Net7CoreApiBoilerplate.DbContext.Entities.Identity;
+using System.Diagnostics;
 
 namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
 {
-    public partial class Net6BoilerplateContext : IdentityDbContext<ApplicationUser, ApplicationRole, long, ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
+    public partial class Net7BoilerplateContext : IdentityDbContext<ApplicationUser, ApplicationRole, long, ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
-        public Net6BoilerplateContext(DbContextOptions<Net6BoilerplateContext> options) : base(options)
+        public Net7BoilerplateContext(DbContextOptions<Net7BoilerplateContext> options) : base(options)
         {
-            // Not needed, why? Cause:
-            /*
-             * The simplest way to use lazy-loading is by installing the Microsoft.EntityFrameworkCore.
-             * Proxies package and enabling it with a call to UseLazyLoadingProxies. For example:
-             * OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-                    => optionsBuilder
-                    .UseLazyLoadingProxies()
-                    .UseSqlServer(myConnectionString);
-             */
-            // this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
-        public static Net6BoilerplateContext Create(string connection)
+        public static Net7BoilerplateContext Create(string connection)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<Net6BoilerplateContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<Net7BoilerplateContext>();
             optionsBuilder.UseSqlServer(connection);
-            return new Net6BoilerplateContext(optionsBuilder.Options);
+            // optionsBuilder.AddInterceptors(HelpMeDecideInterceptors.CreateInterceptors());
+
+            // Helps me with debugging stuff
+            optionsBuilder.EnableDetailedErrors();
+            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.LogTo(message => Debug.WriteLine(message)); // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/simple-logging
+
+            return new Net7BoilerplateContext(optionsBuilder.Options);
         }
 
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -37,7 +35,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.;Database=Test;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.;Database=Net7CoreApiBoilerplate;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=true;");
             }
         }
 
@@ -73,6 +71,8 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
                 .Property(o => o.Oid)
                 .HasDefaultValueSql("NEXT VALUE FOR BlogSeq");
             #endregion
+
+            OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

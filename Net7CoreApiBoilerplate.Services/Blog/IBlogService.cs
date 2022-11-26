@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 using Net7CoreApiBoilerplate.Infrastructure.Services;
 using Net7CoreApiBoilerplate.Services.Blog.Dto;
@@ -32,7 +33,8 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var blogs = _uow.Query<DbContext.Entities.Blog>().ToList();
+                var blogs = await _uow.Query<DbContext.Entities.Blog>().ToListAsync();
+                // var blogs = _uow.Query<DbContext.Entities.Blog>().ToList();
 
                 if (!blogs.Any())
                     return null;

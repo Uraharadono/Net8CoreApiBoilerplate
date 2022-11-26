@@ -136,7 +136,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
 
             /* Code in region below works, but I have little to no control to dispose stuff.
              * Leaving it here as it is code that helped me figure out what is wrong with query below. 
-             * HINT! Don't escape characters in the SQL query. */
+             * HINT! Don't escape fucking characters in the SQL query. */
             #region Development stuff
             //await using (var command = Context.Database.GetDbConnection().CreateCommand())
             //{
@@ -169,7 +169,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
                 {
                     command.CommandText = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME <> '__MigrationHistory' AND TABLE_NAME <> '__EFMigrationsHistory' AND TABLE_NAME <> 'sysdiagrams'"; ;
                     DbDataReader reader = await command.ExecuteReaderAsync();
-                    
+
                     if (reader.HasRows)
                     {
                         while (await reader.ReadAsync())
@@ -180,7 +180,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
                     reader.Dispose();
                 }
 
-                // For now exclude tables from identity as well, because pk's are string, and I have no idea how to change that at this moment
+                // For now exclude tables from identity as well, because fuckers pk's are string, and I have not fucking idea how to change that at this moment
                 // tableNames = tableNames.Where(name => (excluded == null || !excluded.Contains(name)) && !name.ToLower().Contains("asp")).ToList();
 
                 // TODO: After you figure out top comment, remove code above, and use code below
@@ -294,6 +294,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
             Dispose(false);
         }
 
+
         /// <summary>
         ///     Gets the queryable of <typeparamref name="T" /> of the database.
         /// </summary>
@@ -322,6 +323,8 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
             _transaction.Commit();
             _transaction.Dispose();
             _transaction = null;
+
+            ClearChangeTracker();
         }
 
         private void RollbackTransaction()
@@ -332,6 +335,8 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
             _transaction.Rollback();
             _transaction.Dispose();
             _transaction = null;
+
+            ClearChangeTracker();
         }
 
         private void TryRejectChanges()
@@ -395,13 +400,22 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
             DbConnection conn = Context.Database.GetDbConnection();
             try
             {
-                if(conn.State != ConnectionState.Open)
+                if (conn.State != ConnectionState.Open)
                     await conn.OpenAsync();
 
                 await using (DbCommand command = conn.CreateCommand())
                 {
                     command.CommandText = storedProcName;
                     command.CommandType = CommandType.StoredProcedure;
+
+                    // This is done to bypass error: "ExecuteNonQuery requires the command to have a transaction error in my code"
+                    // Figured it out here: https://stackoverflow.com/q/10648718/4267429
+                    // Found fix here: https://stackoverflow.com/a/52352739/4267429
+                    if (IsInTransaction())
+                    {
+                        // command.Transaction = _transaction;
+                        command.Transaction = Context.Database.CurrentTransaction.GetDbTransaction();
+                    }
 
                     foreach (KeyValuePair<string, object> procParam in procParams)
                     {
@@ -449,5 +463,31 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
             return null; // default state
         }
 
+        public void ClearChangeTracker()
+        {
+            if (Context == null)
+                return;
+
+            Context.ChangeTracker.Clear();
+        }
+
+        public Task ExecuteInTransactionAsync(Func<Task> action)
+        {
+            var isAlreadyInTransaction = IsInTransaction();
+
+            try
+            {
+                if (!isAlreadyInTransaction) BeginTransaction();
+                action();
+                if (!isAlreadyInTransaction) CommitTransaction();
+            }
+            catch (Exception)
+            {
+                if (!isAlreadyInTransaction)
+                    RollbackTransaction();
+                throw;
+            }
+            return Task.CompletedTask;
+        }
     }
 }

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <!--<StartupObject></StartupObject>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.11" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Net7CoreApiBoilerplate.DbContext\Net7CoreApiBoilerplate.DbContext.csproj" />
+    <ProjectReference Include="..\Net7CoreApiBoilerplate.Infrastructure\Net7CoreApiBoilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\Net7CoreApiBoilerplate.Services\Net7CoreApiBoilerplate.Services.csproj" />
+  </ItemGroup>
+
+</Project>

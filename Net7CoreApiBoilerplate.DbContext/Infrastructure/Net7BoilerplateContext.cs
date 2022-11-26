@@ -16,7 +16,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
         {
             var optionsBuilder = new DbContextOptionsBuilder<Net7BoilerplateContext>();
             optionsBuilder.UseSqlServer(connection);
-            // optionsBuilder.AddInterceptors(HelpMeDecideInterceptors.CreateInterceptors());
+            // optionsBuilder.AddInterceptors(Net7BoilerplateInterceptors.CreateInterceptors());
 
             // Helps me with debugging stuff
             optionsBuilder.EnableDetailedErrors();

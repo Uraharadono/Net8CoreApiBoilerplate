@@ -136,7 +136,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
 
             /* Code in region below works, but I have little to no control to dispose stuff.
              * Leaving it here as it is code that helped me figure out what is wrong with query below. 
-             * HINT! Don't escape fucking characters in the SQL query. */
+             * HINT! Don't escape characters in the SQL query. */
             #region Development stuff
             //await using (var command = Context.Database.GetDbConnection().CreateCommand())
             //{
@@ -180,7 +180,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
                     reader.Dispose();
                 }
 
-                // For now exclude tables from identity as well, because fuckers pk's are string, and I have not fucking idea how to change that at this moment
+                // For now exclude tables from identity as well, because fuckers pk's are string, and I have not idea how to change that at this moment
                 // tableNames = tableNames.Where(name => (excluded == null || !excluded.Contains(name)) && !name.ToLower().Contains("asp")).ToList();
 
                 // TODO: After you figure out top comment, remove code above, and use code below

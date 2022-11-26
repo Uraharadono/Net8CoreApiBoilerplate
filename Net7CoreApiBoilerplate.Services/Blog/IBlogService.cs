@@ -7,7 +7,6 @@ using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 using Net7CoreApiBoilerplate.Infrastructure.Services;
 using Net7CoreApiBoilerplate.Services.Blog.Dto;
 using NLog;
-#pragma warning disable 1998
 
 namespace Net7CoreApiBoilerplate.Services.Blog
 {
@@ -33,9 +32,9 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var blogs = await _uow.Query<DbContext.Entities.Blog>().ToListAsync();
-                // var blogs = _uow.Query<DbContext.Entities.Blog>().ToList();
-
+                var blogs = await _uow.Query<DbContext.Entities.Blog>()
+                                      .AsNoTracking()
+                                      .ToListAsync();
                 if (!blogs.Any())
                     return null;
 
@@ -52,7 +51,9 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var blog = _uow.Query<DbContext.Entities.Blog>(s => s.Oid == blogId).FirstOrDefault();
+                var blog = _uow.Query<DbContext.Entities.Blog>(s => s.Oid == blogId)
+                               .AsNoTracking()
+                               .FirstOrDefault();
                 if (blog == null)
                     return null;
 
@@ -74,8 +75,8 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                     Url = dto.Url
                 };
 
-                _uow.Context.Set<DbContext.Entities.Blog>().Add(dbBlog);
-                _uow.Commit();
+                await _uow.Context.Set<DbContext.Entities.Blog>().AddAsync(dbBlog);
+                await _uow.CommitAsync();
 
                 dto.Id = dbBlog.Oid;
 
@@ -92,14 +93,14 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var dbBlog = _uow.Query<DbContext.Entities.Blog>(s => s.Oid == dto.Id).FirstOrDefault();
+                var dbBlog = await _uow.Query<DbContext.Entities.Blog>(s => s.Oid == dto.Id).FirstOrDefaultAsync();
 
                 if (dbBlog == null)
                     return false;
 
                 dbBlog.Oid = dto.Id;
                 dbBlog.Url = dto.Url;
-                _uow.Commit();
+                await _uow.CommitAsync();
 
                 return true;
             }

@@ -18,13 +18,12 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
         public static void RegisterUtilityServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Unit of work
-
             var deronContext = Net7BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
-            // Both Singleton and Scoped work - at the moment I feel much better with scoped
-            // services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(deronContext));
-            services.AddScoped<IUnitOfWork>(x => new UnitOfWork(deronContext));
 
+            // Singleton - as we want to reuse DbContext for transactions, and not open it every time we need it
+            services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(deronContext));
         }
+
         public static void AutoRegisterServices(this IServiceCollection services)
         {
             // First we need to register ISettings, IEmailSettings etc. 
@@ -48,6 +47,7 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
         {
             yield return Assembly.GetAssembly(typeof(IAppSettings)); // Infrastructure
         }
+
         private static IEnumerable<Assembly> GetServicesInjectableAssemblies()
         {
             yield return Assembly.GetAssembly(typeof(EmailService)); // Services

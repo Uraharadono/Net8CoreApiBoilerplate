@@ -1,9 +1,9 @@
-# Net 6 Core Api - Boilerplate (with built in auto-discover DI)
+# Net 7 Core Api - Boilerplate (with built in auto-discover DI)
 
 
 ## What ?
 
-A `.Net 6 API` project (I'll make a `.Net 7` one soon because I'm terrible at naming and couldn't figure out a proper one without naming it), which includes:
+A `.Net 7 API` project which includes:
 
 - Autodiscover services 
 - `Microsoft.AspNetCore.Identity` that is managing users and is using `JSON Web Token (JWT)` for auth. It is based on `Identity Server`, and you can easily change it to use `Identity Server` instead (see `AuthenticationHelper.cs line 57`).

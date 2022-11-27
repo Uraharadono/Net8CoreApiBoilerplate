@@ -21,6 +21,7 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
             var deronContext = Net7BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
 
             // Singleton - as we want to reuse DbContext for transactions, and not open it every time we need it
+            // Or in other words: Only Singleton will work - as UoW will get recycled after 1 call and then it will become unusable 
             services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(deronContext));
         }
 

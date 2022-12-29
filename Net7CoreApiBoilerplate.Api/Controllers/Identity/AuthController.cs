@@ -52,7 +52,6 @@ namespace Net7CoreApiBoilerplate.Api.Controllers.Identity
         [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailViewModel model)
         {
-
             if (model.UserId == null || model.Code == null)
             {
                 return BadRequest(new string[] { "Error retrieving information!" });
@@ -63,8 +62,8 @@ namespace Net7CoreApiBoilerplate.Api.Controllers.Identity
                 return BadRequest(new string[] { "Could not find user!" });
 
             IdentityResult result = await _userManager.ConfirmEmailAsync(user, model.Code).ConfigureAwait(false);
-            if (result.Succeeded)
-                return Ok(result);
+            if (!result.Succeeded)
+                return BadRequest(new string[] { "Something went wront confirming user email." });
 
             var lockoutEnabledResult = await _userManager.SetLockoutEnabledAsync(user, false);
             if (!lockoutEnabledResult.Succeeded)
@@ -72,7 +71,8 @@ namespace Net7CoreApiBoilerplate.Api.Controllers.Identity
                 return BadRequest(new string[] { "Something went wront disabling user lockout." });
             }
 
-            return BadRequest(result.Errors.Select(x => x.Description));
+            return Ok();
+            // return BadRequest(result.Errors.Select(x => x.Description));
         }
 
         [HttpPost("Register")]

@@ -7,7 +7,6 @@ A `.Net 7 API` project which includes:
 
 - Autodiscover services - I have created neat auto-discover extension method that will find and inject all of our services that are implementing `IService` interface (e.g. `IBlogService : IService` )
 - `Microsoft.AspNetCore.Identity` that is managing users and is using `JSON Web Token (JWT)` for auth. It is based on `Identity Server`, and you can easily change it to use `Identity Server` instead (see `AuthenticationHelper.cs line 57`).
-- We'll use `Autofac to register our Dependency Injection` code. **I prefer to use the built in Microsoft one**, but I did it with `Autofac` just for exercise.
 - I implemented a `Unit-Of-Work pattern` that meets my needs and the needs of the projects I am working on quite well. Keep in mind that this version was written to support the running of stored procedures as well as to run queries in transactions.
 - Added usage of `Sequences as primary key` for table. (See the 2nd point in "Why?" below. )
 - Modular `CORS` registration

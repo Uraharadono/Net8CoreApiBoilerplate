@@ -66,6 +66,12 @@ namespace Net7CoreApiBoilerplate.Api.Controllers.Identity
             if (result.Succeeded)
                 return Ok(result);
 
+            var lockoutEnabledResult = await _userManager.SetLockoutEnabledAsync(user, false);
+            if (!lockoutEnabledResult.Succeeded)
+            {
+                return BadRequest(new string[] { "Something went wront disabling user lockout." });
+            }
+
             return BadRequest(result.Errors.Select(x => x.Description));
         }
 

@@ -1,0 +1,3 @@
+﻿That's right! 
+In case you are using this boilerplate to bootstrap your development you can safely delete this whole folder. 
+I mean "VueBoilerplate" together with Dto inside it and IVueBoilerplateService.cs file.

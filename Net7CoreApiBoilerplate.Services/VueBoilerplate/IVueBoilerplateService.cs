@@ -2,29 +2,32 @@
 using Net7CoreApiBoilerplate.Services.VueBoilerplate.Dto;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System;
 using System.Threading.Tasks;
 using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 using NLog;
-using Net7CoreApiBoilerplate.Services.Email;
-using System.Runtime;
 using Microsoft.EntityFrameworkCore;
+using Net7CoreApiBoilerplate.Infrastructure.Settings;
+using Net7CoreApiBoilerplate.Utility.Extensions;
+using System.IO;
 
 namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 {
     public interface IVueBoilerplateService : IService
     {
         Task<ClientsOverviewDto> GetClients(ClientsOverviewFilterDto filter);
+        Task<bool> AddArticleDocument(MockDocumentUploadDto dto);
     }
 
     public class VueBoilerplateService : IVueBoilerplateService
     {
         private readonly IUnitOfWork _uow;
+        private readonly IDocumentSettings _documentSettings;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public VueBoilerplateService(IUnitOfWork uow)
+        public VueBoilerplateService(IUnitOfWork uow, IDocumentSettings documentSettings)
         {
             _uow = uow;
+            _documentSettings = documentSettings;
         }
 
         public async Task<ClientsOverviewDto> GetClients(ClientsOverviewFilterDto filter)
@@ -143,5 +146,93 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
             }
         }
 
+        public async Task<bool> AddArticleDocument(MockDocumentUploadDto dto)
+        {
+            try
+            {
+                var guid = Guid.NewGuid();
+
+                #region Poco how to save new record in database using raw SQL
+                //var doc = new MockArticleDocument
+                //{
+                //    OriginalName = dto.FileName,
+                //    UniqueName = guid + "." + dto.FileName.GetExtension(),
+                //    DocumentType = dto.DocumentType,
+                //    Date = DateTime.Now,
+                //    ArticleId = dto.ArticleId,
+                //    // Publisher = dto.CurrentPublisherId,
+                //};
+
+                //await using (var context = _uow.Context)
+                //{
+                //    await using (var dbContextTransaction = await context.Database.BeginTransactionAsync())
+                //    {
+                //        try
+                //        {
+                //            var commandText = @"INSERT INTO ArticleDocument 
+                //            (
+                //             OID
+                //            ,Date
+                //            ,OriginalName
+                //            ,UniqueName
+                //            ,ArticleId
+                //            ,DocumentType
+                //            -- ,Publisher
+                //            )
+                //            VALUES (
+                //                    NEXT VALUE FOR ArticleDocumentSeq,
+                //                    @Date,
+                //                    @OriginalName,
+                //                    @UniqueName,
+                //                    @ArticleId,
+                //                    @DocumentType
+                //                    -- ,@Publisher
+
+                //            )";
+                //            var date = new SqlParameter("@Date", doc.Date);
+                //            var name = new SqlParameter("@OriginalName", doc.OriginalName);
+                //            var uniqueName = new SqlParameter("@UniqueName", doc.UniqueName);
+                //            var articleId = new SqlParameter("@ArticleId", doc.ArticleId);
+                //            var documentType = new SqlParameter("@DocumentType", doc.DocumentType ?? "OrderContents");
+                //            // var publisher = new SqlParameter("@Publisher", doc.Publisher);
+
+                //            context.Database.ExecuteSqlRaw(commandText, date, name, uniqueName, articleId, documentType);// publisher, 
+                //            dbContextTransaction.Commit();
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            _logger.Error(e);
+                //            await dbContextTransaction.RollbackAsync();
+                //            System.Diagnostics.Debug.WriteLine(e.Message);
+                //            return false;
+                //        }
+                //    }
+                //}
+                #endregion
+
+                // Check if folder for upload exists, create it if it doesn't
+                var directoryPath = _documentSettings.BaseFolder + _documentSettings.ArticleDocumentsFolder;
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                var documentPath = _documentSettings.BaseFolder + _documentSettings.ArticleDocumentsFolder + guid + $".{dto.FileName.GetExtension()}";
+                if (File.Exists(documentPath))
+                {
+                    File.Delete(documentPath);
+                }
+
+                await File.WriteAllBytesAsync(documentPath, dto.FileData);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return false;
+            }
+        }
     }
 }

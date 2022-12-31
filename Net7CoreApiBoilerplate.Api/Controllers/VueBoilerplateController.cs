@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Net7CoreApiBoilerplate.Api.Infrastructure;
 using Net7CoreApiBoilerplate.Api.Models;
+using Net7CoreApiBoilerplate.Api.Utility.Extensions;
 using Net7CoreApiBoilerplate.DbContext.Entities.Identity;
 using Net7CoreApiBoilerplate.Infrastructure.Settings;
 using Net7CoreApiBoilerplate.Services.VueBoilerplate;
@@ -72,5 +74,33 @@ namespace Net7CoreApiBoilerplate.Api.Controllers
             var clients = await _vueBoilerplateService.GetClients(filter);
             return Ok(clients);
         }
+
+        [HttpPost, Route("UploadMockDocuments")]
+        public async Task<IActionResult> UploadMockDocuments([FromForm] MockDocumentViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelStateExtensions.GetErrorMessage(ModelState));
+
+            var dto = new MockDocumentUploadDto
+            {
+                ArticleId = model.ArticleId,
+                DocumentType = model.DocumentTypeId,
+                FileData = await model.File.GetBytes(),
+                FileName = model.File.FileName, // I need this property as well, since I have only byte array in my "services" project
+                // CurrentPublisherId = CurrentPublisherId,
+            };
+
+            var result = await _vueBoilerplateService.AddArticleDocument(dto);
+            return result ? Ok() : StatusCode(500);
+        }
+    }
+
+    public class MockDocumentViewModel
+    {
+        public long ArticleId { get; set; }
+        public string DocumentTypeId { get; set; }
+        public IFormFile File { get; set; }
+
+        // public long CurrentPublisherId { get; set; }
     }
 }

@@ -6,6 +6,7 @@
     public interface IDocumentSettings
     {
         public string BaseFolder { get; }
+        public string ArticleDocumentsFolder { get; }
         public string WordTemplatesFolder { get; }
     }
 }

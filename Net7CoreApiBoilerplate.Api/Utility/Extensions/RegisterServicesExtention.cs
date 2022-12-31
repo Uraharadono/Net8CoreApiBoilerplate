@@ -18,11 +18,11 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
         public static void RegisterUtilityServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Unit of work
-            var deronContext = Net7BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
+            var bloggingContext = Net7BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
 
             // Singleton - as we want to reuse DbContext for transactions, and not open it every time we need it
             // Or in other words: Only Singleton will work - as UoW will get recycled after 1 call and then it will become unusable 
-            services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(deronContext));
+            services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(bloggingContext));
         }
 
         public static void AutoRegisterServices(this IServiceCollection services)
@@ -40,7 +40,7 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
             var servicesAssemblies = GetServicesInjectableAssemblies();
             foreach (var assembly in servicesAssemblies)
             {
-                RegisterDeronServicesFromAssembly(services, assembly);
+                RegisterBloggingServicesFromAssembly(services, assembly);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
             }
         }
 
-        private static void RegisterDeronServicesFromAssembly(IServiceCollection services, Assembly assembly)
+        private static void RegisterBloggingServicesFromAssembly(IServiceCollection services, Assembly assembly)
         {
             foreach (var type in assembly.GetTypes())
             {

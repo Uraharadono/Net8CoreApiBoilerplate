@@ -53,6 +53,7 @@ namespace Net7CoreApiBoilerplate.Infrastructure.Settings
 
         // Document settings - mostly save paths
         public string BaseFolder => ReadString("BaseFolder");
+        public string ArticleDocumentsFolder => ReadString("ArticleDocumentsFolder");
         public string WordTemplatesFolder => ReadString("WordTemplatesFolder");
 
         // Utility functions

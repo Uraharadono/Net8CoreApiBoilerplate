@@ -22,7 +22,9 @@ namespace Net7CoreApiBoilerplate.Api.Infrastructure.Helpers
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireLowercase = false;
-                options.Password.RequiredUniqueChars = 6;
+                // Ideally it should be no less than 6, Vue boilerplate forced me to scale it way down,
+                // becase people are lazy and complaining all the time
+                options.Password.RequiredUniqueChars = 1; 
 
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);

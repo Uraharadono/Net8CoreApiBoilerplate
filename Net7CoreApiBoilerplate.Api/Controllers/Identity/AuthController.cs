@@ -258,7 +258,10 @@ namespace Net7CoreApiBoilerplate.Api.Controllers.Identity
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id.ToString()),
-                new Claim("aid", user.Author.ApplicationUserId.ToString()),
+                // should be like this if we have author 1:1 relationship with User table
+                // new Claim("aid", user.Author.ApplicationUserId.ToString()), 
+                // but because of the VueBoilerplate, we have to check stuff
+                new Claim("aid", user.Author != null ? user.Author.ApplicationUserId.ToString() : "0"),
                 new Claim("ip", ipAddress)
             }
             .Union(userClaims)

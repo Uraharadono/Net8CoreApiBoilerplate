@@ -13,6 +13,12 @@ using System.IO;
 
 namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 {
+    /* ============================================================================
+     * YOU DO NOT NEED THIS SERVICE OR ANYTHING IN PARENT DIRECTORY OF THIS FILE
+     * It was created only for the purposes of showing off different functionalities
+     * for my other boilerplate project: "Vue 3 Webpack Boilerplate V2"
+     * https://github.com/Uraharadono/Vue3WebpackBoilerplateV2/
+     * ============================================================================ */
     public interface IVueBoilerplateService : IService
     {
         Task<ClientsOverviewDto> GetClients(ClientsOverviewFilterDto filter);

@@ -68,7 +68,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
                 .HasMin(100);
 
             modelBuilder.Entity<Blog>()
-                .Property(o => o.Oid)
+                .Property(o => o.Id)
                 .HasDefaultValueSql("NEXT VALUE FOR BlogSeq");
             #endregion
 

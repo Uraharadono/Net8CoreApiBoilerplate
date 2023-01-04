@@ -23,7 +23,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                 table: "Posts",
                 column: "AuthorId",
                 principalTable: "Author",
-                principalColumn: "Oid",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
 

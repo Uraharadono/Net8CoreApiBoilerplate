@@ -7,7 +7,7 @@ using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 namespace Net7CoreApiBoilerplate.DbContext.Entities.Identity
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser<long>, IIdentityEntity
+    public class ApplicationUser : IdentityUser<long>, IEntity
     {
         [Required, Column(TypeName = "VARCHAR(250)")]
         public string FirstName { get; set; }

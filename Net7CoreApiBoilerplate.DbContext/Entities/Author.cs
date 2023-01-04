@@ -10,7 +10,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Oid { get; set; }
+        public long Id { get; set; }
 
         [Required, StringLength(255), Column(TypeName = "VARCHAR")]
         public string PenName { get; set; }

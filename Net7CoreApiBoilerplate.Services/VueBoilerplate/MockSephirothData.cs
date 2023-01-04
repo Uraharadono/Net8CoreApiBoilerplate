@@ -12,7 +12,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 
     public class MockSephirothClientAddress : IEntity
     {
-        public long Oid { get; set; }
+        public long Id { get; set; }
 
         public string Street { get; set; }
         public string Number { get; set; }
@@ -27,14 +27,14 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 
     public class MockSephirothClientClientType : IEntity
     {
-        public long Oid { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
     }
 
     public class MockSephirothClient : IEntity
     {
-        public long Oid { get; set; }
+        public long Id { get; set; }
         public bool IsActive { get; set; }
 
         public string Name { get; set; }
@@ -57,7 +57,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
             {
                 addresses.Add(new MockSephirothClientAddress
                 {
-                    Oid = i,
+                    Id = i,
                     Street = $"{i} Street",
                     Number = $"{i}",
                     NumberAddition = $"{i} NumberAddition",
@@ -72,7 +72,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
             {
                 clientTypes.Add(new MockSephirothClientClientType
                 {
-                    Oid = i,
+                    Id = i,
                     Name = $"Client type {i}",
                 });
             }
@@ -83,7 +83,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
             {
                 retList.Add(new MockSephirothClient
                 {
-                    Oid = i,
+                    Id = i,
                     IsActive = i % 5 == 0, // every 5th is inactive
                     Name = $"Client {i}",
                     Email = $"{i}@client{i}.com",

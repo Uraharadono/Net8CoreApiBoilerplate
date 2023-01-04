@@ -38,7 +38,7 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                 if (!blogs.Any())
                     return null;
 
-                return blogs.Select(s => new BlogDto { Id = s.Oid, Url = s.Url }).ToList();
+                return blogs.Select(s => new BlogDto { Id = s.Id, Url = s.Url }).ToList();
             }
             catch (Exception e)
             {
@@ -51,13 +51,13 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var blog = _uow.Query<DbContext.Entities.Blog>(s => s.Oid == blogId)
+                var blog = _uow.Query<DbContext.Entities.Blog>(s => s.Id == blogId)
                                .AsNoTracking()
                                .FirstOrDefault();
                 if (blog == null)
                     return null;
 
-                return new BlogDto { Id = blog.Oid, Url = blog.Url };
+                return new BlogDto { Id = blog.Id, Url = blog.Url };
             }
             catch (Exception e)
             {
@@ -78,7 +78,7 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                 await _uow.Context.Set<DbContext.Entities.Blog>().AddAsync(dbBlog);
                 await _uow.CommitAsync();
 
-                dto.Id = dbBlog.Oid;
+                dto.Id = dbBlog.Id;
 
                 return dto;
             }
@@ -93,12 +93,12 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var dbBlog = await _uow.Query<DbContext.Entities.Blog>(s => s.Oid == dto.Id).FirstOrDefaultAsync();
+                var dbBlog = await _uow.Query<DbContext.Entities.Blog>(s => s.Id == dto.Id).FirstOrDefaultAsync();
 
                 if (dbBlog == null)
                     return false;
 
-                dbBlog.Oid = dto.Id;
+                dbBlog.Id = dto.Id;
                 dbBlog.Url = dto.Url;
                 await _uow.CommitAsync();
 

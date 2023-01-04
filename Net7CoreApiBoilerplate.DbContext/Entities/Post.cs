@@ -8,7 +8,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Oid { get; set; }
+        public long Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
 

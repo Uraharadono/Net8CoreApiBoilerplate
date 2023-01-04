@@ -25,7 +25,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Author", b =>
                 {
-                    b.Property<long>("Oid")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -38,7 +38,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("VARCHAR(255)");
 
-                    b.HasKey("Oid");
+                    b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
@@ -48,7 +48,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Blog", b =>
                 {
-                    b.Property<long>("Oid")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasDefaultValueSql("NEXT VALUE FOR BlogSeq");
@@ -56,7 +56,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Oid");
+                    b.HasKey("Id");
 
                     b.ToTable("Blogs");
                 });
@@ -275,7 +275,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Post", b =>
                 {
-                    b.Property<long>("Oid")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -292,7 +292,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Oid");
+                    b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 

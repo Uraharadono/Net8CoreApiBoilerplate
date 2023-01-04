@@ -16,12 +16,12 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                 name: "Blogs",
                 columns: table => new
                 {
-                    Oid = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "NEXT VALUE FOR BlogSeq"),
+                    Id = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "NEXT VALUE FOR BlogSeq"),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Blogs", x => x.Oid);
+                    table.PrimaryKey("PK_Blogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,7 +73,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    Oid = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -81,12 +81,12 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Oid);
+                    table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Posts_Blogs_BlogId",
                         column: x => x.BlogId,
                         principalTable: "Blogs",
-                        principalColumn: "Oid",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -115,14 +115,14 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                 name: "Author",
                 columns: table => new
                 {
-                    Oid = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PenName = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false),
                     ApplicationUserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Author", x => x.Oid);
+                    table.PrimaryKey("PK_Author", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Author_Users_ApplicationUserId",
                         column: x => x.ApplicationUserId,

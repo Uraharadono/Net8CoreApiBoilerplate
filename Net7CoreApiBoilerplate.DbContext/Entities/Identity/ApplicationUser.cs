@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
@@ -29,6 +30,8 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities.Identity
         // 1 on 1 relationship with Author
         public virtual Author Author { get; set; }
 
+        [InverseProperty("UserNavigation")]
+        public virtual ICollection<Logging> Loggings { get; set; }
 
 
         /* =============== Non-mapped properties =============== */

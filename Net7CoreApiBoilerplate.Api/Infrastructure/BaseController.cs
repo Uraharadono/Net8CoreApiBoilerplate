@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Net7CoreApiBoilerplate.Api.Utility.Extensions;
 using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 
 namespace Net7CoreApiBoilerplate.Api.Infrastructure
@@ -11,6 +12,8 @@ namespace Net7CoreApiBoilerplate.Api.Infrastructure
     {
         // Currently logged in Publisher
         // public long CurrentPublisherId => this.HttpContext.GetCurrentPublisherId();
+        public long CurrentUserId => this.HttpContext.GetCurrentUserId();
+
 
         // Managing files (downloading & converting)
         [NonAction] // I don't want this to be called outside my controllers 

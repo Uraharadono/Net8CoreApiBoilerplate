@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Net7CoreApiBoilerplate.DbContext.Enums;
 using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 using Net7CoreApiBoilerplate.Infrastructure.Services;
 using Net7CoreApiBoilerplate.Services.Blog.Dto;
+using Net7CoreApiBoilerplate.Services.Logging;
 using NLog;
 
 namespace Net7CoreApiBoilerplate.Services.Blog
@@ -21,11 +23,13 @@ namespace Net7CoreApiBoilerplate.Services.Blog
     public class BlogService : IBlogService
     {
         private readonly IUnitOfWork _uow;
+        private readonly ILoggingService _logsService;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public BlogService(IUnitOfWork uow)
+        public BlogService(IUnitOfWork uow, ILoggingService logsService)
         {
             _uow = uow;
+            _logsService = logsService;
         }
 
         public async Task<List<BlogDto>> GetBlogs()
@@ -76,6 +80,7 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                 };
 
                 await _uow.Context.Set<DbContext.Entities.Blog>().AddAsync(dbBlog);
+                await _logsService.SaveLogNoCommit(DateTime.Now, dto.CurrentUserId, ELogType.BlogAdded, $"New blog with url {dto.Url}."); // save log of this action
                 await _uow.CommitAsync();
 
                 dto.Id = dbBlog.Id;
@@ -98,7 +103,9 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                 if (dbBlog == null)
                     return false;
 
-                dbBlog.Id = dto.Id;
+                // Save log before we change values, so we can construct our message
+                await _logsService.SaveLogNoCommit(DateTime.Now, dto.CurrentUserId, ELogType.BlogAdded, $"Updated blog with id: {dto.Id}", $"Changed url from: {dbBlog.Url}, to: {dto.Url}");
+
                 dbBlog.Url = dto.Url;
                 await _uow.CommitAsync();
 

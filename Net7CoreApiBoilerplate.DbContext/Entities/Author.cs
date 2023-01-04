@@ -19,7 +19,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
         public long ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
-        [InverseProperty("Author")]
+        [InverseProperty("AuthorNavigation")]
         public List<Post> Posts { get; set; }
     }
 }

@@ -6,14 +6,14 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
 {
     public static class HttpContextExtensions
     {
-        public static string GetCurrentUserId(this HttpContext httpContext)
+        public static long GetCurrentUserId(this HttpContext httpContext)
         {
             if (httpContext.User == null)
             {
-                return string.Empty;
+                return -1;
             }
 
-            return httpContext.User.Claims.Single(claim => claim.Type == "uid").Value;
+            return Convert.ToInt64(httpContext.User.Claims.Single(claim => claim.Type == "uid").Value);
         }
 
 

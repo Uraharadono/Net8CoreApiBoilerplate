@@ -16,8 +16,8 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
         public Blog Blog { get; set; }
 
         [Required]
-        [ForeignKey("Author")]
+        [ForeignKey("AuthorNavigation")]
         public long AuthorId { get; set; }
-        public Author Author { get; set; }
+        public Author AuthorNavigation { get; set; }
     }
 }

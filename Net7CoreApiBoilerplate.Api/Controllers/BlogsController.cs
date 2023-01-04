@@ -44,7 +44,8 @@ namespace Net7CoreApiBoilerplate.Api.Controllers
             BlogDto dto = new BlogDto
             {
                 Id = model.Id,
-                Url = model.Url
+                Url = model.Url,
+                CurrentUserId = CurrentUserId
             };
 
             var addStatus = await _blogService.AddBlog(dto);
@@ -60,7 +61,8 @@ namespace Net7CoreApiBoilerplate.Api.Controllers
             BlogDto dto = new BlogDto
             {
                 Id = model.Id,
-                Url = model.Url
+                Url = model.Url,
+                CurrentUserId = CurrentUserId
             };
 
             var addStatus = await _blogService.UpdateBlog(dto);

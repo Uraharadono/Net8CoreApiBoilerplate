@@ -8,7 +8,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Oid { get; set; }
+        public long Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
 
@@ -16,8 +16,8 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
         public Blog Blog { get; set; }
 
         [Required]
-        [ForeignKey("Author")]
+        [ForeignKey("AuthorNavigation")]
         public long AuthorId { get; set; }
-        public Author Author { get; set; }
+        public Author AuthorNavigation { get; set; }
     }
 }

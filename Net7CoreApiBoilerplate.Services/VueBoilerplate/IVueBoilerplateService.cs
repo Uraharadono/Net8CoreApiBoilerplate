@@ -79,7 +79,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 
                 if (string.IsNullOrWhiteSpace(filter.SortFieldName))
                 {
-                    query = query.OrderBy(current => current.Oid);
+                    query = query.OrderBy(current => current.Id);
                 }
                 else
                 {
@@ -134,7 +134,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 
                 response.Items.AddRange(data.Select(client => new ClientsOverviewItemDto
                 {
-                    Id = client.Oid,
+                    Id = client.Id,
                     Name = client.Name,
                     Address = client.Addresses.FirstOrDefault()?.AddressLine1,
                     Place = client.Addresses.FirstOrDefault()?.Place,

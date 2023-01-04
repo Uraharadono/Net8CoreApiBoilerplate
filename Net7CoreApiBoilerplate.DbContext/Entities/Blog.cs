@@ -9,7 +9,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Oid { get; set; }
+        public long Id { get; set; }
         public string Url { get; set; }
 
         public List<Post> Posts { get; } = new List<Post>();

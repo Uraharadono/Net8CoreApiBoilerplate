@@ -7,30 +7,39 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Net7CoreApiBoilerplate.DbContext.Infrastructure;
 
+#nullable disable
+
 namespace Net7CoreApiBoilerplate.DbContext.Migrations
 {
     [DbContext(typeof(Net7BoilerplateContext))]
-    [Migration("20220509194659_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230104185451_LoggingTableMigration")]
+    partial class LoggingTableMigration
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.HasSequence("BlogSeq")
                 .StartsAt(100L)
                 .HasMin(100L);
 
+            modelBuilder.HasSequence("LoggingSeq")
+                .StartsAt(2000000L)
+                .HasMin(2000000L);
+
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Author", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long>("ApplicationUserId")
                         .HasColumnType("bigint");
@@ -38,7 +47,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                     b.Property<string>("PenName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("VARCHAR(255)");
+                        .HasColumnType("VARCHAR");
 
                     b.HasKey("Id");
 
@@ -67,8 +76,9 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -89,15 +99,16 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationRoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -112,15 +123,16 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUser", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -194,15 +206,16 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUserClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -217,7 +230,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaims");
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUserLogin", b =>
@@ -238,7 +251,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins");
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUserRole", b =>
@@ -253,7 +266,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUserToken", b =>
@@ -272,15 +285,50 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens");
+                    b.ToTable("UserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Logging", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime>("LogDatum")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LogText")
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR");
+
+                    b.Property<int>("LogType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LogValue")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Logging");
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Post", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AuthorId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("BlogId")
                         .HasColumnType("bigint");
@@ -292,6 +340,8 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("BlogId");
 
@@ -360,15 +410,39 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Logging", b =>
+                {
+                    b.HasOne("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUser", "UserNavigation")
+                        .WithMany("Loggings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserNavigation");
+                });
+
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Post", b =>
                 {
+                    b.HasOne("Net7CoreApiBoilerplate.DbContext.Entities.Author", "AuthorNavigation")
+                        .WithMany("Posts")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Net7CoreApiBoilerplate.DbContext.Entities.Blog", "Blog")
                         .WithMany("Posts")
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("AuthorNavigation");
+
                     b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Author", b =>
+                {
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Blog", b =>
@@ -379,6 +453,8 @@ namespace Net7CoreApiBoilerplate.DbContext.Migrations
             modelBuilder.Entity("Net7CoreApiBoilerplate.DbContext.Entities.Identity.ApplicationUser", b =>
                 {
                     b.Navigation("Author");
+
+                    b.Navigation("Loggings");
                 });
 #pragma warning restore 612, 618
         }

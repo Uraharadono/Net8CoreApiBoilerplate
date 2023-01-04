@@ -39,7 +39,7 @@ namespace Net7CoreApiBoilerplate.Services.Post
 
                 return dbPosts.Select(s => new PostDto
                 {
-                    Id = s.Oid,
+                    Id = s.Id,
                     BlogId = s.BlogId,
                     Content = s.Content,
                     Title = s.Title
@@ -56,13 +56,13 @@ namespace Net7CoreApiBoilerplate.Services.Post
         {
             try
             {
-                var dbPost = _uow.Query<DbContext.Entities.Post>(s => s.Oid == postId).FirstOrDefault();
+                var dbPost = _uow.Query<DbContext.Entities.Post>(s => s.Id == postId).FirstOrDefault();
                 if (dbPost == null)
                     return null;
 
                 return new PostDto
                 {
-                    Id = dbPost.Oid,
+                    Id = dbPost.Id,
                     BlogId = dbPost.BlogId,
                     Content = dbPost.Content,
                     Title = dbPost.Title
@@ -89,7 +89,7 @@ namespace Net7CoreApiBoilerplate.Services.Post
                 _uow.Context.Set<DbContext.Entities.Post>().Add(dbPost);
                 _uow.Commit();
 
-                dto.Id = dbPost.Oid;
+                dto.Id = dbPost.Id;
 
                 return dto;
             }
@@ -104,12 +104,12 @@ namespace Net7CoreApiBoilerplate.Services.Post
         {
             try
             {
-                var dbPost = _uow.Query<DbContext.Entities.Post>(s => s.Oid == dto.Id).FirstOrDefault();
+                var dbPost = _uow.Query<DbContext.Entities.Post>(s => s.Id == dto.Id).FirstOrDefault();
 
                 if (dbPost == null)
                     return false;
 
-                dbPost.Oid = dto.Id;
+                dbPost.Id = dto.Id;
                 dbPost.BlogId = dto.BlogId;
                 dbPost.Content = dto.Content;
                 dbPost.Title = dto.Title;

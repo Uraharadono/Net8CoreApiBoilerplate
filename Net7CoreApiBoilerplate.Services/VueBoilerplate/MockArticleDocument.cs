@@ -5,7 +5,7 @@ namespace Net7CoreApiBoilerplate.Services.VueBoilerplate
 {
     public class MockArticleDocument : IEntity
     {
-        public long Oid { get; set; }
+        public long Id { get; set; }
         public string OriginalName { get; set; }
         public string UniqueName { get; set; }
         public string DocumentType { get; set; }

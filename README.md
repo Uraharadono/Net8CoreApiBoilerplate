@@ -39,4 +39,4 @@ If you get a `401 Status Code`, it means you are not authorized. You can either 
 
 # Plans for future? 
 
-I think it would be good to add some example code for the `EF Interceptors` and `EF Global filters`. 
+I think it would be good to add some example code for the `EF Global filters` (if I figure out some logic for it - maybe publishers or something).

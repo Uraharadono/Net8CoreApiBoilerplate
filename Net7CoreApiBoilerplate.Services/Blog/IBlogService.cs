@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Net7CoreApiBoilerplate.DbContext.Enums;
 using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 using Net7CoreApiBoilerplate.Infrastructure.Services;
 using Net7CoreApiBoilerplate.Services.Blog.Dto;
+using Net7CoreApiBoilerplate.Services.Logging;
 using NLog;
 
 namespace Net7CoreApiBoilerplate.Services.Blog
@@ -21,11 +23,13 @@ namespace Net7CoreApiBoilerplate.Services.Blog
     public class BlogService : IBlogService
     {
         private readonly IUnitOfWork _uow;
+        private readonly ILoggingService _logsService;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public BlogService(IUnitOfWork uow)
+        public BlogService(IUnitOfWork uow, ILoggingService logsService)
         {
             _uow = uow;
+            _logsService = logsService;
         }
 
         public async Task<List<BlogDto>> GetBlogs()
@@ -38,7 +42,7 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                 if (!blogs.Any())
                     return null;
 
-                return blogs.Select(s => new BlogDto { Id = s.Oid, Url = s.Url }).ToList();
+                return blogs.Select(s => new BlogDto { Id = s.Id, Url = s.Url }).ToList();
             }
             catch (Exception e)
             {
@@ -51,13 +55,13 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var blog = _uow.Query<DbContext.Entities.Blog>(s => s.Oid == blogId)
+                var blog = _uow.Query<DbContext.Entities.Blog>(s => s.Id == blogId)
                                .AsNoTracking()
                                .FirstOrDefault();
                 if (blog == null)
                     return null;
 
-                return new BlogDto { Id = blog.Oid, Url = blog.Url };
+                return new BlogDto { Id = blog.Id, Url = blog.Url };
             }
             catch (Exception e)
             {
@@ -76,9 +80,10 @@ namespace Net7CoreApiBoilerplate.Services.Blog
                 };
 
                 await _uow.Context.Set<DbContext.Entities.Blog>().AddAsync(dbBlog);
+                await _logsService.SaveLogNoCommit(DateTime.Now, dto.CurrentUserId, ELogType.BlogAdded, $"New blog with url {dto.Url}."); // save log of this action
                 await _uow.CommitAsync();
 
-                dto.Id = dbBlog.Oid;
+                dto.Id = dbBlog.Id;
 
                 return dto;
             }
@@ -93,12 +98,14 @@ namespace Net7CoreApiBoilerplate.Services.Blog
         {
             try
             {
-                var dbBlog = await _uow.Query<DbContext.Entities.Blog>(s => s.Oid == dto.Id).FirstOrDefaultAsync();
+                var dbBlog = await _uow.Query<DbContext.Entities.Blog>(s => s.Id == dto.Id).FirstOrDefaultAsync();
 
                 if (dbBlog == null)
                     return false;
 
-                dbBlog.Oid = dto.Id;
+                // Save log before we change values, so we can construct our message
+                await _logsService.SaveLogNoCommit(DateTime.Now, dto.CurrentUserId, ELogType.BlogAdded, $"Updated blog with id: {dto.Id}", $"Changed url from: {dbBlog.Url}, to: {dto.Url}");
+
                 dbBlog.Url = dto.Url;
                 await _uow.CommitAsync();
 

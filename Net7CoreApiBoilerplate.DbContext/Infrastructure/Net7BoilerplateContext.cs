@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Net7CoreApiBoilerplate.DbContext.Entities;
 using Net7CoreApiBoilerplate.DbContext.Entities.Identity;
+using Net7CoreApiBoilerplate.DbContext.Interceptors;
 using System.Diagnostics;
 
 namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
@@ -18,6 +19,9 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
             optionsBuilder.UseSqlServer(connection);
             // optionsBuilder.AddInterceptors(Net7BoilerplateInterceptors.CreateInterceptors());
 
+            // Setup our interceptors
+            optionsBuilder.AddInterceptors(BloggingInterceptors.CreateInterceptors());
+
             // Helps me with debugging stuff
             optionsBuilder.EnableDetailedErrors();
             optionsBuilder.EnableSensitiveDataLogging();
@@ -28,6 +32,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
 
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
+        public virtual DbSet<Logging> Logging { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,6 +41,14 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=.;Database=Net7CoreApiBoilerplate;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=true;");
+
+                // Setup our interceptors
+                optionsBuilder.AddInterceptors(BloggingInterceptors.CreateInterceptors());
+
+                // Helps me with debugging stuff
+                optionsBuilder.EnableDetailedErrors();
+                optionsBuilder.EnableSensitiveDataLogging();
+                optionsBuilder.LogTo(message => Debug.WriteLine(message)); // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/simple-logging
             }
         }
 
@@ -56,6 +69,13 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
             modelBuilder.Entity<ApplicationUserToken>().ToTable("UserTokens");
             #endregion
 
+            modelBuilder.Entity<Logging>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("Id");
+            });
+
             #region Global filters
             // https://docs.microsoft.com/en-us/ef/core/querying/filters
             // modelBuilder.Entity<Blog>().HasQueryFilter(a => a.PublisherId == PublisherId);
@@ -68,8 +88,19 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
                 .HasMin(100);
 
             modelBuilder.Entity<Blog>()
-                .Property(o => o.Oid)
+                .Property(o => o.Id)
                 .HasDefaultValueSql("NEXT VALUE FOR BlogSeq");
+
+            // Sometimes we cannot set the sequence like we did above for the BlogSeq.
+            // Reason can be that when scafolding our database it will mark PK of table with "ValueGeneratedNever" 
+            // That's why we are going to create "LoggingInterceptor" to help us with inserting data for Logs table. 
+            // Another reason for interceptor could be that we have an old system that is still being used while we rework this one. 
+            // It could use some obscure logic to fetch next id for Logging record, and we have to reset Sequence before we insert anything. 
+            // For more info why I needed this, read the note on top of the file "LoggingInterceptor.cs"
+            modelBuilder.HasSequence<long>("LoggingSeq")
+                        .StartsAt(2000000)
+                        .IncrementsBy(1)
+                        .HasMin(2000000);
             #endregion
 
             OnModelCreatingPartial(modelBuilder);

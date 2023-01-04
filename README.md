@@ -32,8 +32,9 @@ Nothing. Optionally, you can create a database called `BloggingDb` on your prefe
 3. Run the api project
 ```
 
-# Note for 401
+# Note for 401 
 
+This should be common knowledge, but in case someone who is a beginner in the programming world wants to run this project:
 If you get a `401 Status Code`, it means you are not authorized. You can either remove the `[Authorize]` attribute on the `Controller` or login and add the bearer token to the top of the page with `Swagger`.
 
 

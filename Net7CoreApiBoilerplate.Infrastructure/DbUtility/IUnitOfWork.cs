@@ -33,4 +33,8 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
 
         Task ExecuteInTransactionAsync(Func<Task> action);
     }
+
+    // Generic IUnitOfWork interface that will help me with registering the scope of UnitOfWork easier
+    public interface IUnitOfWork<T> : IUnitOfWork, IDisposable where T : DbContext
+    { }
 }

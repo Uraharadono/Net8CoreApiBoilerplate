@@ -490,4 +490,18 @@ namespace Net7CoreApiBoilerplate.Infrastructure.DbUtility
             return Task.CompletedTask;
         }
     }
+
+
+    // Generic UnitOfWork implementation that will help me with registering the scope of UnitOfWork easier
+    public class UnitOfWork<T> : UnitOfWork, IUnitOfWork<T> where T : DbContext
+    {
+        // I am basically abusing it to just call constructor of non generic UnitOfWork implementation above
+        #region Ctor
+
+        public UnitOfWork(T dbContext)
+            : base(dbContext)
+        { }
+
+        #endregion Ctor
+    }
 }

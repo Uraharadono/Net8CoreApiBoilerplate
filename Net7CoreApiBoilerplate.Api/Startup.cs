@@ -55,8 +55,15 @@ namespace Net7CoreApiBoilerplate.Api
             AuthenticationHelper.ConfigureService(services, Settings.Issuer, Settings.Audience, Settings.Key);
             // AuthenticationHelper.ConfigureServiceSimple(services, Settings.Issuer, Settings.Audience, Settings.Key);
 
-            // Register UoW and other helper services
-            services.RegisterUtilityServices(Configuration);
+            // Register UoW and other helper services 
+            // services.RegisterUtilityServices_depricated(Configuration); // This method won't work, read comments on this method
+
+            // However, below is the solution with generic UoW implementation
+            // Idea to upgrade my Unit of work to generic seen here: https://github.com/ffernandolima/ef-core-data-access/tree/ef-core-7
+            services.AddScoped<Microsoft.EntityFrameworkCore.DbContext, Net7BoilerplateContext>();
+            services.AddUnitOfWork();
+            services.AddUnitOfWork<Net7BoilerplateContext>(); // This does not need to be registered. Everythong will work without this line of code. But I will leave it here just for good measure.
+
 
             // Do our magic to load services automatically, and resolve their DI
             services.AutoRegisterServices();

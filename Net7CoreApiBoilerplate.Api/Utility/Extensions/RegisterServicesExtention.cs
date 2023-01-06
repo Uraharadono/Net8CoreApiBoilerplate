@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Net7CoreApiBoilerplate.DbContext.Infrastructure;
 using Net7CoreApiBoilerplate.Infrastructure.DbUtility;
 using Net7CoreApiBoilerplate.Infrastructure.Services;
@@ -15,8 +16,41 @@ namespace Net7CoreApiBoilerplate.Api.Utility.Extensions
     // Note to self: This can be split in 2 different methods and files (other being RegisterAppConfigurations)
     public static class RegisterServicesExtention
     {
-        public static void RegisterUtilityServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddUnitOfWork(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
         {
+            services.TryAddScoped<IUnitOfWork, UnitOfWork>();
+            return services;
+        }
+
+        public static IServiceCollection AddUnitOfWork<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped) where T : Microsoft.EntityFrameworkCore.DbContext
+        {
+            services.TryAddScoped<IUnitOfWork<T>, UnitOfWork<T>>();
+            return services;
+        }
+
+        // This is not working anymore, see comments inside
+        public static void RegisterUtilityServices_depricated(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Reason that registering the UnitOfWork won't work like shown in code below is that 
+            // no matter which type of registration is picked up it will yield issues in long run
+
+            // Singleton will produce following error if you are calling more than 2 methods at the same time.
+            // Most notably I had this happen on sales order details screen, where I called 7-8 api endpoints on page load.
+            // An exception occurred while iterating over the results of a query for context type 'DeronCore.DataContext.Infrastructure.DeronContext'.
+            // System.InvalidOperationException: A second operation was started on this context instance before a previous operation completed.
+            // This is usually caused by different threads concurrently using the same instance of DbContext.
+            // services.AddSingleton<IUnitOfWork>(x => new UnitOfWork(connection));
+
+            // Scoped will dispose of DBContext:
+            // System.ObjectDisposedException: 'Cannot access a disposed context instance. A common cause of this error is disposing a context instance 
+            // that was resolved from dependency injection and then later trying to use the same context instance elsewhere in your application. 
+            // services.AddScoped<IUnitOfWork>(x => new UnitOfWork(connection));
+
+            // Transient will result in error similar to that we had in Scoped
+            // services.AddTransient<IUnitOfWork>(x => new UnitOfWork(connection));
+
+            // Original implementation below
+
             // Unit of work
             var bloggingContext = Net7BoilerplateContext.Create(configuration.GetConnectionString("BloggingDb"));
 

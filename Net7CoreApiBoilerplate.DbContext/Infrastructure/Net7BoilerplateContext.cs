@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Net7CoreApiBoilerplate.DbContext.Entities;
 using Net7CoreApiBoilerplate.DbContext.Entities.Identity;
 using Net7CoreApiBoilerplate.DbContext.Interceptors;
+using Net7CoreApiBoilerplate.Infrastructure.Settings;
 using System.Diagnostics;
 
 namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
@@ -13,6 +14,17 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
         {
         }
 
+        // This Constructor is going to be called every time to register out Context since 
+        // I need to set GlobalFilter on my queries. I have taken the idea from here: https://stackoverflow.com/a/66383855/4267429
+        // I had no need for new class, as I already have my AppSettings initialization
+        public Net7BoilerplateContext(DbContextOptions<Net7BoilerplateContext> options, AppSettings settings) : base(options)
+        {
+            // Set global filter value
+            // OrganizationType = (EOrganisationType)settings.OrganizationType;
+        }
+
+
+        // This method won't be used in the Api project anymore, but it is still used in CronJobs (Background Tasks)
         public static Net7BoilerplateContext Create(string connection)
         {
             var optionsBuilder = new DbContextOptionsBuilder<Net7BoilerplateContext>();

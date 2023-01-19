@@ -19,7 +19,7 @@ namespace Net7CoreApiBoilerplate.DbContext.Infrastructure
         // I had no need for new class, as I already have my AppSettings initialization
         public Net7BoilerplateContext(DbContextOptions<Net7BoilerplateContext> options, AppSettings settings) : base(options)
         {
-            // Set global filter value
+            // Set global filter here
             // OrganizationType = (EOrganisationType)settings.OrganizationType;
         }
 

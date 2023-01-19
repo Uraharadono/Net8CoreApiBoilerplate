@@ -32,6 +32,10 @@ Nothing. Optionally, you can create a database called `BloggingDb` on your prefe
 3. Run the api project
 ```
 
+1. Open `PMC console` (`Visual studio: View -> Other windows -> Package Manager Console`)
+2. Type command: `Update-Database` to EF Core run migrations
+3. Run the api project
+
 # Note for 401 
 
 This should be common knowledge, but in case someone who is a beginner in the programming world wants to run this project:

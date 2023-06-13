@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Net7CoreApiBoilerplate.Api.Infrastructure;
 using Net7CoreApiBoilerplate.Api.Infrastructure.Helpers;
+using Net7CoreApiBoilerplate.Api.Utility;
 using Net7CoreApiBoilerplate.Api.Utility.Extensions;
 using Net7CoreApiBoilerplate.DbContext.Infrastructure;
 using Net7CoreApiBoilerplate.Infrastructure.Settings;
 using Newtonsoft.Json.Serialization;
+using Serilog;
 
 namespace Net7CoreApiBoilerplate.Api
 {
@@ -80,10 +82,27 @@ namespace Net7CoreApiBoilerplate.Api
                 });
             });
 
+            var logger = new LoggerConfiguration()
+                                .Enrich.FromLogContext()
+                                .Enrich.WithProperty("ApplicationName", "My application name")
+                                .WriteTo.Console()
+                                .MinimumLevel.Override("  Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
+                                .WriteTo.File($"{Settings.BaseFolder}{Settings.LogsFolder}\\my_application_log.txt", rollingInterval: RollingInterval.Hour);
+
+
             if (HostingEnvironment.IsDevelopment())
             {
                 SwaggerHelper.ConfigureService(services);
+
+                // If deploying to Azure, I should probably add lines below as they are going to enable us to view events on the Azure: https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview?tabs=net
+                //var telemetryConfiguration = new TelemetryConfiguration(globConfig.AppInsights.InstrumentationKey);
+                //logger.WriteTo.ApplicationInsights(telemetryConfiguration, telemetryConverter: TelemetryConverter.Traces);
             }
+
+            Log.Logger = logger.CreateLogger();
+
+            // We are creating folders for uploads and stuff in case they don't exist on startup
+            FolderBuilder.BuildFolders(Settings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,7 +5,7 @@ using Net7CoreApiBoilerplate.Utility.Extensions;
 
 namespace Net7CoreApiBoilerplate.Infrastructure.Settings
 {
-    public interface IAppSettings : IJwtSettings, IClientAppSettings, IEmailSettings, IDocumentSettings
+    public interface IAppSettings : IJwtSettings, IClientAppSettings, IEmailSettings, IDocumentSettings, ILoggerConfiguration
     {
         int OrganizationType { get;  }
         bool IsDebug { get; }
@@ -55,6 +55,9 @@ namespace Net7CoreApiBoilerplate.Infrastructure.Settings
         public string BaseFolder => ReadString("BaseFolder");
         public string ArticleDocumentsFolder => ReadString("ArticleDocumentsFolder");
         public string WordTemplatesFolder => ReadString("WordTemplatesFolder");
+
+        // Logger configuration
+        public string LogsFolder => ReadString("LogsFolder");
 
         // Utility functions
         private string ReadString(string key)

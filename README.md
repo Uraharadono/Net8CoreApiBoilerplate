@@ -1,9 +1,9 @@
-# Net 7 Core Api - Boilerplate (with built in auto-discover DI)
+# Net 8 Core Api - Boilerplate (with built in auto-discover DI)
 
 
 ## What ?
 
-A `.Net 7 API` project which includes:
+A `.Net 8 API` project which includes:
 
 - Autodiscover services - I have created neat auto-discover extension method that will find and inject all of our services that are implementing `IService` interface (e.g. `IBlogService : IService` )
 - `Microsoft.AspNetCore.Identity` that is managing users and is using `JSON Web Token (JWT)` for auth. It is based on `Identity Server`, and you can easily change it to use `Identity Server` instead (see `AuthenticationHelper.cs line 57`).

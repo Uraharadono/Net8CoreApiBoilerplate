@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="5.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Net8CoreApiBoilerplate.DbContext\Net8CoreApiBoilerplate.DbContext.csproj" />
+    <ProjectReference Include="..\Net8CoreApiBoilerplate.Infrastructure\Net8CoreApiBoilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\Net8CoreApiBoilerplate.Utility\Net8CoreApiBoilerplate.Utility.csproj" />
+  </ItemGroup>
+
+</Project>
